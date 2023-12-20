@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "987057244567",
+    "project_id": "codepal-142",
+    "storage_bucket": "codepal-142.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:987057244567:android:417b8bca56b0e355369cd2",
+        "android_client_info": {
+          "package_name": "com.example.codepal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhsHFsYjyLlB4fNkA1KFQTJTgtult4H6k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
