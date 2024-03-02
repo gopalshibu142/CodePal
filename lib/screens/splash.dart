@@ -24,6 +24,9 @@ class _SplashState extends State<Splash> {
         User? user = FirebaseAuth.instance.currentUser;
         getMessages().then((value) async{
           messages = value;
+          if (messages.length>30){
+            messages = messages.sublist(messages.length-30);
+          }
            
           currentUser = types.User(id: user!.uid, firstName: user.displayName);
         print(currentUser!.firstName);

@@ -1,3 +1,4 @@
+import 'package:codepal/database/api.dart';
 import 'package:codepal/global.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
@@ -22,19 +23,19 @@ class _ChatUIState extends State<ChatUI> {
   //       .then((value) => print(value));
   // }
 
-  Future<String> getGeminiResponse(String message) async {
-    // flutter
-    var gemini = Gemini.instance;
-    String response = 'Error';
-    await gemini
-        .text(message)
-        .then((value) => response = value?.output ?? 'Error')
+  // Future<String> getGeminiResponse(String message) async {
+  //   // flutter
+  //   var gemini = Gemini.instance;
+  //   String response = 'Error';
+  //   await gemini
+  //       .text(message)
+  //       .then((value) => response = value?.output ?? 'Error')
 
-        /// or value?.content?.parts?.last.text
-        .catchError((e) =>
-            response = 'Sorry, I didn\'t get that. Could you try again?\n$e');
-    return response;
-  }
+  //       /// or value?.content?.parts?.last.text
+  //       .catchError((e) =>
+  //           response = 'Sorry, I didn\'t get that. Could you try again?\n$e');
+  //   return response;
+  // }
 
   List<types.User> typingUsers = [];
   types.User gemini = types.User(
@@ -51,7 +52,7 @@ class _ChatUIState extends State<ChatUI> {
         IconButton(
           icon: const Icon(Icons.logout),
           onPressed: () {
-            getMessages();
+            getGeminiChatResponse('hmm thats nice');
             //show alert dialog
             showDialog(
               context: context,
@@ -104,22 +105,32 @@ class _ChatUIState extends State<ChatUI> {
               //show typing indicator
               typingUsers.add(gemini);
             });
-            setTextMessage(message,currentUser);
-            var id2 = DateTime.now().millisecondsSinceEpoch + 5;
-            await getGeminiResponse(text.text).then((value) {
-              types.TextMessage reply = types.TextMessage(
-                author: gemini,
-                createdAt: id,
-                id: 'Gemini${id.toString()}',
-                text: value,
-              );
+            setTextMessage(message, currentUser);
+            await getGeminiChatResponse(text.text).then((value) {
+              types.TextMessage reply = value;
               messages.insert(
                 0,
                 reply,
               );
-              setTextMessage(reply,gemini);
+              setTextMessage(reply, gemini);
             });
-            
+
+            // var id2 = DateTime.now().millisecondsSinceEpoch + 5;
+            // await getGeminiResponse(text.text).then((value) {
+            //   types.TextMessage reply = types.TextMessage(
+            //     author: gemini,
+            //     createdAt: id,
+            //     id: 'Gemini${id.toString()}',
+            //     text: value,
+            //   );
+            //   messages.insert(
+            //     0,
+            //     reply,
+            //   );
+
+            // setTextMessage(reply, gemini);
+            // });
+
             typingUsers.remove(gemini);
             setState(() {});
           },
