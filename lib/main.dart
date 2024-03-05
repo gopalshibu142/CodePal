@@ -19,8 +19,11 @@ class CodePal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      
       title: 'CodePal',
-      theme: ThemeData.dark(),
+      theme: ThemeData.dark(
+        useMaterial3: true
+      ),
       home: const Splash(),
     );
   }

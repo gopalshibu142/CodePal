@@ -42,6 +42,9 @@ dependencies:
   lottie: ^2.7.0
   flutter_gemini: ^2.0.3
   flutter_chat_ui: ^1.6.12
+  icons_launcher: ^2.1.7
+  file_picker: ^6.1.1
+  image_picker: ^1.0.7
 
 dev_dependencies:
   flutter_test:
@@ -96,3 +99,16 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+icons_launcher:
+  image_path: "assets/logo.jpeg"
+  adaptive_icon_background: "assets/logo.jpeg"
+  adaptive_icon_foreground: "assets/logo.jpeg"
+
+  platforms:
+    android:
+      enable: true
+      adaptive_icon_background: "assets/logo.jpeg"
+      adaptive_icon_foreground: "assets/logo.jpeg"
+      background_color: "#000000"
+    ios:
+      enable: true
