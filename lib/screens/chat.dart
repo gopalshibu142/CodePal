@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:codepal/database/api.dart';
 import 'package:codepal/global.dart';
 import 'package:flutter/material.dart';
@@ -74,9 +76,6 @@ class _ChatUIState extends State<ChatUI> {
                   setState(() {});
                 } else if (result == 'Logout') {
                   setState(() {
-                    isIncognito = false;
-                    currentUser = null;
-                    messages = [];
                     //show alert
                     showDialog(
                       context: context,
@@ -88,6 +87,15 @@ class _ChatUIState extends State<ChatUI> {
                             TextButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
+                                isIncognito = false;
+                                currentUser = null;
+                                messages = [];
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const Login(),
+                                  ),
+                                );
                               },
                               child: const Text('OK'),
                             ),
@@ -122,17 +130,45 @@ class _ChatUIState extends State<ChatUI> {
             typingUsers: typingUsers,
           ),
           onAttachmentPressed: () async {
-            typingUsers.add(gemini);
+            // typingUsers.add(gemini);
             XFile? resultImage = await handleImageSelection();
-            setState(() {
-              
-            });
-            if (resultImage != null) {
-              final message = await getGeminiImageResponse(resultImage);
-              messages.insert(0, message);
-            }
-            typingUsers.remove(gemini);
             setState(() {});
+            // if (resultImage != null) {
+            //   final message = await getGeminiImageResponse(resultImage);
+            //   messages.insert(0, message);
+            // }
+            // typingUsers.remove(gemini);
+            // setState(() {});
+          },
+          onMessageLongPress: (context, p1) {
+            //show alert
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('Delete Message'),
+                  content: const Text(
+                      'Are you sure you want to delete this message?'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        messages.remove(p1);
+                        await deleteMessageById(p1.id);
+                        setState(() {});
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Delete'),
+                    ),
+                  ],
+                );
+              },
+            );
           },
           messages: messages,
           onSendPressed: (text) async {
@@ -152,14 +188,40 @@ class _ChatUIState extends State<ChatUI> {
                 typingUsers.add(gemini);
               });
               if (!isIncognito) setTextMessage(message, currentUser);
-              await getGeminiChatResponse(text.text).then((value) {
-                types.TextMessage reply = value;
-                messages.insert(
-                  0,
-                  reply,
-                );
-                if (!isIncognito) setTextMessage(reply, gemini);
-              });
+              if (messages.length>1){
+              if(messages[1] is types.ImageMessage &&
+                  messages[0] is types.TextMessage){
+                await getGeminiImageResponse(
+                        (File((messages[1] as types.ImageMessage).uri)),
+                        message.text)
+                    .then((value) {
+                  types.TextMessage reply = value;
+                  messages.insert(
+                    0,
+                    reply,
+                  );
+                  if (!isIncognito) setTextMessage(reply, gemini);
+                });
+              } else {
+                await getGeminiChatResponse(text.text).then((value) {
+                  types.TextMessage reply = value;
+                  messages.insert(
+                    0,
+                    reply,
+                  );
+                  if (!isIncognito) setTextMessage(reply, gemini);
+                });
+              }}
+              else {
+                await getGeminiChatResponse(text.text).then((value) {
+                  types.TextMessage reply = value;
+                  messages.insert(
+                    0,
+                    reply,
+                  );
+                  if (!isIncognito) setTextMessage(reply, gemini);
+                });
+              }
 
               // var id2 = DateTime.now().millisecondsSinceEpoch + 5;
               // await getGeminiResponse(text.text).then((value) {

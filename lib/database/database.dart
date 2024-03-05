@@ -155,3 +155,9 @@ void setImageMessage(types.ImageMessage message, types.User? user) {
     'width': message.width,
   });
 }
+Future deleteMessageById(String id) async {
+  final ref = FirebaseDatabase.instance.ref();
+  await ref.child('users').child(currentUser!.id).child('messages').orderByChild('id').equalTo(id).once().then((value) {
+   value.snapshot.ref.remove();
+  });
+  }
